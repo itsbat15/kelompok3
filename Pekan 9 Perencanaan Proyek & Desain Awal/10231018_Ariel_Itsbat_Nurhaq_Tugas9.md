@@ -2,9 +2,9 @@
 
 ## 👥 Kelompok 3
 
-1. Salsabila Putri Zahrani (10231086) - Network Services Specialist
-2. Andini Permata Dewanti (10231014) - Network Architect
-3. Ariel Itsbat Nurhaq (10231018) - Security & Documentation Specialist
+1. Salsabila Putri Zahrani (10231086)     - Network Services Specialist
+2. Andini Permata Dewanti (10231014)      - Network Architect
+3. Ariel Itsbat Nurhaq (10231018)         - Security & Documentation Specialist
 4. Jonathan Joseph Tampubolon (102310478) - Network Engineer
 
 ---
@@ -71,27 +71,29 @@ Tabel Kebutuhan Perangkat per Ruang
 
 | Lokasi           | Perangkat      | VLAN               | Keterangan                                                 |
 | ---------------- | -------------- | ------------------ | ---------------------------------------------------------- |
-| Ruang IT         | 1 Switch       | VLAN IT (10)       | Terhubung ke 40 komputer IT. Subnet: 192.168.10.0/24       |
-| Ruang Keuangan   | 1 Switch       | VLAN Keuangan (20) | Terhubung ke 25 komputer Keuangan. Subnet: 192.168.20.0/24 |
+| Ruang IT         | 2 Switch       | VLAN IT (10)       | Terhubung ke 40 komputer IT. Subnet: 192.168.10.0/24       |
+| Ruang Keuangan   | 2 Switch       | VLAN Keuangan (20) | Terhubung ke 25 komputer Keuangan. Subnet: 192.168.20.0/24 |
 | Ruang SDM        | 1 Switch       | VLAN SDM (30)      | Terhubung ke 20 komputer SDM. Subnet: 192.168.30.0/24      |
 | Server Farm      | 1 Switch       | VLAN Server (40)   | Terhubung ke 10 server internal. Subnet: 192.168.40.0/24   |
 | Ruang Router/WAN | 1 Router Utama | -                  | Gateway utama koneksi WAN antar gedung                     |
+|                  | 1 Router Lokal | -                  | Terhubung ke Router gedung B dan Router WAN (gateway utama)|
 |                  | 1 Main Switch  | -                  | Penghubung antar VLAN & perangkat jaringan lainnya         |
+|                  | 1 Firewall     | -                  | Implementasi NAT ACL dan keamanan jaringan.                |
 
 ---
-
 #### 🏬 Kantor Cabang (Gedung B)
 
 Tabel Kebutuhan Perangkat per Ruang
 
-| Lokasi            | Perangkat      | VLAN                  | Keterangan                                        |
-| ----------------- | -------------- | --------------------- | ------------------------------------------------- |
-| Ruang Marketing   | 1 Switch       | VLAN Marketing (50)   | Terhubung ke 30 komputer. Subnet: 192.168.50.0/24 |
-| Ruang Operasional | 1 Switch       | VLAN Operasional (60) | Terhubung ke 35 komputer. Subnet: 192.168.60.0/24 |
-| Ruang Router/WAN  | 1 Router Lokal | -                     | Gateway ke Gedung A via WAN                       |
+| Lokasi            | Perangkat      | VLAN                  | Keterangan                                          |
+| ----------------- | -------------- | --------------------- | --------------------------------------------------- |
+| Ruang Marketing   | 2 Switch       | VLAN Marketing (50)   | Terhubung ke 30 komputer. Subnet: 192.168.50.0/24   |
+| Ruang Operasional | 2 Switch       | VLAN Operasional (60) | Terhubung ke 35 komputer. Subnet: 192.168.60.0/24   |
+| Ruang Router/WAN  | 1 Router Lokal | -                     | Gateway ke Gedung A via WAN                         |
+|                   | 1 Main Switch  | -                     | Penghubung antar VLAN & perangkat jaringan lainnya  |
+|                   | 1 Firewall     | -                     | Implementasi NAT ACL dan keamanan jaringan.         |
 
 ---
-
 #### 📌 Penjelasan Umum Perangkat
 
 - **Switch**
@@ -100,18 +102,27 @@ Tabel Kebutuhan Perangkat per Ruang
   - Setiap Switch akan memiliki konfigurasi IP sesuai subnet VLAN-nya
 
 - **Router Utama**
-
   - Menjadi gatewsy utama untuk koneksi intenet fan WAN antar gedung
   - Konfigurasi NAT untuk akses internet
-  - Routing dinamis OSPF untuk manajemen rute antar gedung
+  - Routing dinamis OSPF untuk manajemen rute antar gedung  
+
+- **Firewall***
+  - Ditempatkan di kedua lokasi, untuk keamanan jaringan  
+  - Di gedung A, Firewal juga bertugas sebagai NAT untuk akses Internet  
+  - Di gedung B, digunakan untuk membatasi akses antar departemen sesuai kebijakan keamanan  
 
 - **Main Switch**
-
   - Berfungsi sebagai penghubung pusat antar VLAN dan perangkat jaringan lainnya.
-  - Penghubung semua VLAN ke router utam dan server
+  - Penghubung semua VLAN ke router utama dan server.  
+
+- **Router Lokal**
+  - Routing data antar jaringan lokal (LAN)
+  - Koneksi antar gedung
+  - Manajemen IP address
+  - Penghubung ke internet
+
 
 - **Routing Dinamis (OSPF)**
-
   - Penjaga rute agar optimal dan adaptif
 
 - **Server**
@@ -144,18 +155,22 @@ Tabel Kebutuhan Perangkat per Ruang
 | VLAN Marketing   | 192.168.50.0/24 | 192.168.50.1 - 192.168.50.254 |
 | VLAN Operasional | 192.168.60.0/24 | 192.168.60.1 - 192.168.60.254 |
 
+
 ---
 
 #### 🖧 Jenis Perangkat Jaringan dan Model
 
-| Lokasi        | Perangkat    | Fungsi / Jenis     | Model Cisco           | Keterangan                          |
-| ------------- | ------------ | ------------------ | --------------------- | ----------------------------------- |
-| Kantor Pusat  | Router Utama | Gateway & Routing  | Cisco ISR 4321        | Routing antar VLAN & WAN            |
-|               | Switch       | Koneksi LAN        | Cisco Catalyst 2960-X | Koneksi perangkat LAN               |
-| Kantor Cabang | Router Lokal | Gateway & Routing  | Cisco ISR 4321        | Routing lokal & koneksi ke Gedung A |
-|               | Switch       | Routing Antar VLAN | Cisco Catalyst 9300   | Hub utama VLAN internal             |
-|               | Switch       | Koneksi LAN        | Cisco Catalyst 2960-X | Perangkat LAN & AP                  |
-
+| Lokasi        | Perangkat    | Fungsi / Jenis     | Model Cisco           | Keterangan                                     |
+| ------------- | ------------ | ------------------ | --------------------- | ---------------------------------------------- |
+| Kantor Pusat  | Router Utama | Gateway & Routing  | Cisco ISR 4321        | Routing antar VLAN & WAN                       |
+|               | Router Lokal | Routing LAN        | Cisco ISR 4321        | Koneksi perangkat LAN                          |
+|               | Main Switch  | Routing antar VLAN | Cisco Catalyst 2960-X | Koneksi perangkat LAN                          |
+|               | Switch       | Koneksi LAN        | Cisco Catalyst 2960-X | Koneksi perangkat LAN                          |
+|               | Firewall     | Keamanan Jaringan  | Cisco ASA 5506-X      | Koneksi perangkat LAN                          |
+| Kantor Cabang | Router Lokal | Gateway & Routing  | Cisco ISR 4321        | Routing lokal & koneksi ke Gedung A            |
+|               | Main Switch  | Routing Antar VLAN | Cisco Catalyst 9300   | Hub utama VLAN internal                        |
+|               | Switch       | Koneksi LAN        | Cisco Catalyst 2960-X | Perangkat LAN & AP                             |
+|               | Firewall     | Keamanan Jaringan  | Cisco ASA 5506-X      | Koneksi perangkat LAN                          |
 ---
 
 #### 🔌 Jenis Kabel yang Digunakan
